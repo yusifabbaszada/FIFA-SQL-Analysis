@@ -54,6 +54,9 @@ CREATE TABLE fifa_players (
     sliding_tackle TEXT
 );
 
+--Oyunçulara player_id adlı Primary Keylər veririk
+ALTER TABLE fifa_players ADD COLUMN player_id SERIAL PRIMARY KEY;
+
 DROP TABLE IF EXISTS agents;
 
 CREATE TABLE agents (
