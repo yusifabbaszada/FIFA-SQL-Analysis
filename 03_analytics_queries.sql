@@ -45,5 +45,5 @@ and age::INTEGER < (SELECT AVG(age::INTEGER) from fifa_players where age!='age')
 CREATE VIEW az_lar AS
 SELECT name, age FROM fifa_players
 WHERE nationality='Azerbaijan'
-       -- Daha sonra qısa kodla baxmaq imkanı
+       -- Yaradılmış View-ya baxmaq üçün ayrıca sorğu
        SELECT * FROM az_lar
