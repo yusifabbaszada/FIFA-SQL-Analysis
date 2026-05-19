@@ -53,3 +53,23 @@ CREATE TABLE fifa_players (
     standing_tackle TEXT,
     sliding_tackle TEXT
 );
+
+DROP TABLE IF EXISTS agents;
+
+CREATE TABLE agents (
+    agent_id SERIAL PRIMARY KEY,
+    agent_name TEXT,
+    player_id INTEGER
+);
+
+-- Test məlumatları
+INSERT INTO agents (agent_name, player_id) VALUES
+('Jorge Mendes', 1),
+('Jorge Mendes', 5),
+('Mino Raiola Legacy', 10),
+('Mino Raiola Legacy', 12),
+('Jonathan Barnett', 3),
+('Pini Zahavi', 7),
+('Pini Zahavi', 25),
+('Volker Struth', 50),
+('Volker Struth', 100);
