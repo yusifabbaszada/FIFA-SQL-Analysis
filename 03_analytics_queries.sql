@@ -63,3 +63,17 @@ INNER JOIN fifa_players p2 ON p1.positions=p2.positions
 WHERE p1.positions!='GK' and p1.nationality='Germany' and p2.nationality='Germany' and p1.overall_rating::INTEGER > 75
 and p2.overall_rating::INTEGER > 75
 LIMIT 100;
+
+-- ANALİZ 8: Agentliyi Olmayan Sahibsiz Ulduzlar (LEFT JOIN ... IS NULL)
+-- Reytinqi 85+ olan və agenti olmayan oyunçular
+SELECT 
+    p.player_id,
+    p.name as oyuncu_adi, 
+    p.overall_rating,
+    p.nationality,
+    a.agent_name as futbol_agenti
+FROM fifa_players p
+LEFT JOIN agents a ON p.player_id = a.player_id
+WHERE a.agent_name IS NULL 
+  AND p.overall_rating::INTEGER >= 85
+ORDER BY p.overall_rating::INTEGER DESC;
