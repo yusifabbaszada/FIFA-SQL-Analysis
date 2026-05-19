@@ -47,3 +47,19 @@ SELECT name, age FROM fifa_players
 WHERE nationality='Azerbaijan'
        -- Yaradılmış View-ya baxmaq üçün ayrıca sorğu
        SELECT * FROM az_lar
+
+-- ANALİZ 7: Taktiki Analiz (Eyni mövqedə oynayan fərqli ayaqlı oyunçular (Qapıçıları çıxmaqla))
+SELECT 
+    p1.name as oyuncu_1,
+    p2.name as oyuncu_2,
+    p1.positions,
+    p1.overall_rating as overall_1,
+    p2.overall_rating as overall_2,
+    p1.preferred_foot as foot_1,
+    p2.preferred_foot as foot_2
+FROM fifa_players p1
+INNER JOIN fifa_players p2 ON p1.positions=p2.positions
+                        AND p1.preferred_foot<p2.preferred_foot
+WHERE p1.positions!='GK' and p1.nationality='Germany' and p2.nationality='Germany' and p1.overall_rating::INTEGER > 75
+and p2.overall_rating::INTEGER > 75
+LIMIT 100;
