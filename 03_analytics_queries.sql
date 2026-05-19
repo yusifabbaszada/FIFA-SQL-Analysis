@@ -27,3 +27,23 @@ FROM fifa_players
 WHERE value_euro is not null
 GROUP BY age
 ORDER BY age ASC;
+
+-- ANALIZ 4: Ortalamadan yüksək maaş alan oyunçular
+SELECT name,nationality, wage_euro
+FROM fifa_players
+where wage_euro!='wage_euro'
+and wage_euro::INTEGER > (SELECT AVG(wage_euro::INTEGER) from fifa_players where wage_euro!='wage_euro')
+ORDER BY wage_euro::INTEGER DESC
+
+--ANALİZ 5: Yaşı ortalama yaşdan aşağı olan oyunçuların sayı
+SELECT COUNT(*) as gencler
+FROM fifa_players
+where age!='age'
+and age::INTEGER < (SELECT AVG(age::INTEGER) from fifa_players where age!='age')
+
+--ANALİZ 6: Daxilində yalnız Azərbaycanlı oyunçuların adı və yaşı olan view(görüntü)
+CREATE VIEW az_lar AS
+SELECT name, age FROM fifa_players
+WHERE nationality='Azerbaijan'
+       -- Daha sonra qısa kodla baxmaq imkanı
+       SELECT * FROM az_lar
