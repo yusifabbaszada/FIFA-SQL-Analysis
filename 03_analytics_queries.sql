@@ -77,3 +77,17 @@ LEFT JOIN agents a ON p.player_id = a.player_id
 WHERE a.agent_name IS NULL 
   AND p.overall_rating::INTEGER >= 85
 ORDER BY p.overall_rating::INTEGER DESC;
+
+--ANALIZ 9: Oyuncunun adinin ilk 3 herfinden ve olkesinin ilk 3 herfinden ibaret skaut kodlari
+--Meselen L. Messi ucun MES-ARG
+SELECT CONCAT(
+	CASE
+		WHEN POSITION(' ' IN name) > 0 THEN SUBSTRING(UPPER(name) FROM POSITION(' ' IN name) + 1 FOR 3)
+		WHEN POSITION('.' IN name) > 0 and POSITION('. ' IN name) = 0 THEN SUBSTRING(UPPER(name) FROM POSITION('.' IN name) + 1 FOR 3)
+		ELSE SUBSTRING(UPPER(TRIM(name)) FROM 1 FOR 3)
+		END,
+		'-' ,SUBSTRING(UPPER(nationality) FOR 3)
+	) as skaut_kodu
+FROM fifa_players
+WHERE name !='' and name!='name'
+LIMIT 200;
