@@ -139,3 +139,13 @@ SELECT
     ROW_NUMBER() OVER(PARTITION BY nationality ORDER BY overall_rating::INTEGER DESC) as milli_daxili_sira
 FROM fifa_players
 WHERE nationality IN ( 'Argentina', 'Spain' )  AND overall_rating != 'overall_rating' and overall_rating::INTEGER > 70;
+
+--ANALIZ 13: Lead ve Lag sorgulari
+--Fransa millisi uzre her oyuncunun ozunden sonra (derece siralamasinda) gelen oyuncudan olan derece ferqi
+
+SELECT  name,
+		overall_rating,
+		overall_rating::INTEGER - lead(overall_rating::INTEGER) OVER(ORDER BY overall_rating::INTEGER DESC) as ferq
+FROM fifa_players
+WHERE nationality = 'France' and overall_rating  != 'overall_rating'
+LIMIT 30;
