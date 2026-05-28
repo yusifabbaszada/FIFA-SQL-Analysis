@@ -91,3 +91,51 @@ SELECT CONCAT(
 FROM fifa_players
 WHERE name !='' and name!='name'
 LIMIT 200;
+
+--ANALIZ 10: Maaş Balansı və Kateqoriya Analizi
+--Oyunçuları reytinq qruplarına bölür və fərdi maaşları öz qruplarının ortalaması ilə müqayisə edir.
+SELECT 
+    name, 
+    overall_rating,
+    CASE 
+        WHEN overall_rating::INTEGER >= 90 THEN '90+'
+        WHEN overall_rating::INTEGER >= 80 THEN '80-89'
+        ELSE '79-'
+    END as category,
+    wage_euro::INTEGER as ferdi_maas,
+    ROUND((
+        SELECT AVG(s2.wage_euro::INTEGER) 
+        FROM fifa_players s2
+        WHERE s2.wage_euro != 'wage_euro' AND s2.wage_euro != ''
+          AND CASE 
+                  WHEN s1.overall_rating::INTEGER >= 90 THEN s2.overall_rating::INTEGER >= 90
+                  WHEN s1.overall_rating::INTEGER >= 80 THEN s2.overall_rating::INTEGER >= 80 AND s2.overall_rating::INTEGER < 90
+                  ELSE s2.overall_rating::INTEGER < 80
+              END
+    )) as kateqoriya_orta_maasi
+FROM fifa_players s1
+WHERE overall_rating != 'overall_rating' AND overall_rating != ''
+ORDER BY overall_rating::INTEGER DESC
+LIMIT 20;
+
+--ANALIZ 11: Gənc Oyunçuların İnkişaf və Zaman Analizi
+--Yaşı cüt olan oyunçuların reytinq kökünü tapır və gələcək yoxlanış tarixlərini hesablayır.
+SELECT 
+    name, 
+    age, 
+    overall_rating,
+    ROUND(SQRT(overall_rating::INTEGER)::NUMERIC, 1) as reyting_kok,
+    CURRENT_DATE + INTERVAL '1 year 6 months' as inkisaf_yoxlanis_tarixi
+FROM fifa_players
+WHERE name != 'name' 
+  AND name != ''
+  AND MOD(age::INTEGER, 2) = 0
+LIMIT 20;
+
+--ANALIZ 12: Overall_rating-i 70 den cox olan Ispaniya veya Argentina milliyyetine sahib oyunculari 1-den baslayaraq siralamaq
+
+SELECT 
+    name, nationality, overall_rating,
+    ROW_NUMBER() OVER(PARTITION BY nationality ORDER BY overall_rating::INTEGER DESC) as milli_daxili_sira
+FROM fifa_players
+WHERE nationality IN ( 'Argentina', 'Spain' )  AND overall_rating != 'overall_rating' and overall_rating::INTEGER > 70;
