@@ -149,3 +149,33 @@ SELECT  name,
 FROM fifa_players
 WHERE nationality = 'France' and overall_rating  != 'overall_rating'
 LIMIT 30;
+
+
+--ANALIZ 14: Budcesi (millilerin umumi ortalama budcesinden) cox olan millilerin budceleri
+--(derece siralamasinda ilk 25 oyuncuya esasen)
+
+WITH top25_oyuncu AS (
+    SELECT
+		nationality,
+		wage_euro::INTEGER as maas,
+		ROW_NUMBER() OVER(PARTITION BY nationality ORDER BY overall_rating::INTEGER DESC) as sira_no
+	FROM fifa_players
+	WHERE nationality != '' AND nationality != 'nationality'
+      AND wage_euro != '' AND wage_euro != 'wage_euro' AND wage_euro IS NOT NULL
+),
+
+
+milli_budceleri AS (
+	SELECT nationality,
+		   SUM(maas) as umumi_budce
+	FROM top25_oyuncu
+	WHERE sira_no <= 25
+	GROUP BY nationality
+)
+
+SELECT
+	nationality,
+	umumi_budce
+FROM milli_budceleri
+WHERE umumi_budce > (SELECT AVG(umumi_budce) FROM milli_budceleri)
+ORDER BY umumi_budce DESC;
