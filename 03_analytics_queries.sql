@@ -179,3 +179,22 @@ SELECT
 FROM milli_budceleri
 WHERE umumi_budce > (SELECT AVG(umumi_budce) FROM milli_budceleri)
 ORDER BY umumi_budce DESC;
+
+
+--ANALIZ 15: Yaş və bazar dəyəri əlaqəsi (M - milyon , K - min  görünüşü ilə)
+
+SELECT age, 
+       COUNT(*) as say,
+	   CASE
+       	WHEN
+		   AVG(value_euro::NUMERIC)>=1000000
+		   THEN CONCAT(ROUND(AVG(value_euro::NUMERIC)/1000000,2), 'M')
+		WHEN AVG(value_euro::NUMERIC)>=1000
+			THEN CONCAT(ROUND(AVG(value_euro::NUMERIC)/1000,2), 'K')
+		ELSE
+			ROUND(AVG(value_euro::NUMERIC),2)::TEXT
+		END as orta_deyer
+FROM fifa_players
+WHERE value_euro is not null
+GROUP BY age
+ORDER BY age ASC;
