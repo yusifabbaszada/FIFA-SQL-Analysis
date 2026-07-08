@@ -198,3 +198,35 @@ FROM fifa_players
 WHERE value_euro is not null
 GROUP BY age
 ORDER BY age ASC;
+
+--ANALIZ 16: ANALIZ 10-un maaslarin K (min) ile gosterildiyi yeni versiyasi
+
+SELECT 
+    s1.name,
+    s1.overall_rating,
+    CASE 
+        WHEN s1.overall_rating::INTEGER >= 90 THEN '90+'
+        WHEN s1.overall_rating::INTEGER >= 80 THEN '80-89'
+        ELSE '79-'
+    END as category,
+    CASE
+        WHEN s1.wage_euro::NUMERIC >= 1000
+            THEN CONCAT(ROUND(s1.wage_euro::NUMERIC / 1000, 1), 'K')
+        ELSE
+            ROUND(s1.wage_euro::NUMERIC, 2)::TEXT
+    END as ferdi_maas,
+    ROUND((
+        SELECT AVG(s2.wage_euro::INTEGER) 
+        FROM fifa_players s2
+        WHERE s2.wage_euro != 'wage_euro' AND s2.wage_euro != ''
+          AND CASE 
+                  WHEN s1.overall_rating::INTEGER >= 90 THEN s2.overall_rating::INTEGER >= 90
+                  WHEN s1.overall_rating::INTEGER >= 80 THEN s2.overall_rating::INTEGER >= 80 AND s2.overall_rating::INTEGER < 90
+                  ELSE s2.overall_rating::INTEGER < 80
+              END
+    )) as kateqoriya_orta_maasi
+FROM fifa_players s1
+WHERE s1.overall_rating != 'overall_rating' AND s1.overall_rating != ''
+  AND s1.wage_euro != 'wage_euro' AND s1.wage_euro != '' AND s1.wage_euro IS NOT NULL
+ORDER BY s1.overall_rating::INTEGER DESC
+LIMIT 20;
