@@ -266,3 +266,18 @@ ORDER BY s1.overall_rating::INTEGER DESC
 -- ... ve sadece 1 setirlik kodla hemin cedvele baxa bilirik
 SELECT * FROM v_advanced_player_analytics WHERE category = '90+' -- 90+ dereceli oyunculari secerek
 
+
+-- ANALIZ 18: Tehlukesizliyi qorumaq ucun BEGIN ve COMMIT emrlerinden istifade edirik
+-- ROLLBACK; emri ile ise deyisikliyi geri qaytara bilirik
+
+BEGIN;
+
+Update fifa_players
+set overall_rating='80'
+Where name='Y.Abbaszada';
+
+Update fifa_players
+set value_euro='15000000'
+where name='Y.Abbaszada';
+
+COMMIT;
