@@ -291,3 +291,38 @@ WHERE birth_date != 'birth_date'
   AND birth_date IS NOT NULL
 ORDER BY overall_rating DESC
 limit 20
+
+--ANALIZ 20: Seçilmiş millətin maaşlarını faizlə avtomatik yeniləyən prosedur
+
+CREATE OR REPLACE PROCEDURE pr_milli_maas(p_milli TEXT, p_faiz INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE fifa_players
+    SET wage_euro = (wage_euro::NUMERIC * (1 + p_faiz / 100.0))::TEXT
+    WHERE nationality = p_milli;
+END;
+$$;
+
+-- Prosedurun işləmə testi (Məsələn Fransa üçün 15% artım):
+CALL pr_milli_maas('France', 15);
+
+--ANALIZ 21: Astronomik maaşları avtomatik limitləyən trigger
+
+CREATE OR REPLACE FUNCTION fn_maas_sigortasi()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	IF NEW.wage_euro::NUMERIC > 1000000
+	THEN NEW.wage_euro := '1000000';
+	END IF;
+	RETURN NEW;
+END;
+$$
+
+-- 2. Triggerin Cədvələ Bağlanması
+CREATE OR REPLACE TRIGGER trg_before_player_insert
+BEFORE INSERT ON fifa_players
+FOR EACH ROW
+EXECUTE FUNCTION fn_maas_sigortasi();
