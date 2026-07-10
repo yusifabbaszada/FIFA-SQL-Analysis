@@ -281,3 +281,13 @@ set value_euro='15000000'
 where name='Y.Abbaszada';
 
 COMMIT;
+
+--ANALIZ 19: Oyuncularin yaslarini cari tarix etibarile gun deqiqliyi ile hesablayiriq
+
+SELECT name, age(CURRENT_DATE,TO_DATE(birth_date,'MM/DD/YYYY')) as YAS
+from fifa_players
+WHERE birth_date != 'birth_date' 
+  AND birth_date != '' 
+  AND birth_date IS NOT NULL
+ORDER BY overall_rating DESC
+limit 20
